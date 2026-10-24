@@ -35,8 +35,8 @@ namespace NapisyAi.Emby
             try
             {
                 var args = track.IsExternal
-                    ? new[] { "-v", "error", "-y", "-i", track.Path!, "-c:s", "srt", temp }
-                    : new[] { "-v", "error", "-y", "-i", item.Path, "-map", "0:" + track.Index, "-c:s", "srt", temp };
+                    ? new[] { "-nostdin", "-v", "error", "-y", "-i", track.Path!, "-c:s", "srt", temp }
+                    : new[] { "-nostdin", "-v", "error", "-y", "-i", item.Path, "-map", "0:" + track.Index, "-c:s", "srt", temp };
                 await RunAsync(encoder.EncoderPath, args, cancellationToken).ConfigureAwait(false);
                 return Srt.Parse(TextDecoder.Decode(File.ReadAllBytes(temp)));
             }
@@ -54,7 +54,7 @@ namespace NapisyAi.Emby
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
-                Arguments = string.Join(" ", args.Select(Quote)),
+                Arguments = string.Join(" ", args.Select(ProcessArgs.Quote)),
             };
             using var process = Process.Start(psi) ?? throw new InvalidOperationException("Nie udało się uruchomić ffmpeg");
             var stderr = process.StandardError.ReadToEndAsync();
@@ -70,7 +70,5 @@ namespace NapisyAi.Emby
                 throw new InvalidOperationException("ffmpeg nie wyciągnął napisów: " + (err.Length > 300 ? err.Substring(0, 300) : err));
             }
         }
-
-        private static string Quote(string arg) => "\"" + arg.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
     }
 }

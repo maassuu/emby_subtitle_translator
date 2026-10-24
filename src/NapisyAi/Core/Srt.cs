@@ -12,30 +12,41 @@ namespace NapisyAi.Core
             @"^\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})",
             RegexOptions.Compiled);
 
-        private static readonly Regex BlankLines = new Regex(@"\n\s*\n", RegexOptions.Compiled);
-
         public static List<Cue> Parse(string text)
         {
-            text = text.TrimStart('﻿').Replace("\r\n", "\n").Replace('\r', '\n');
-            var cues = new List<Cue>();
-            foreach (var block in BlankLines.Split(text))
+            var lines = text.TrimStart('\ufeff').Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+            var timings = new List<int>();
+            for (var i = 0; i < lines.Length; i++)
             {
-                var lines = block.Trim('\n').Split('\n');
-                for (var i = 0; i < lines.Length; i++)
+                if (Timing.IsMatch(lines[i]))
                 {
-                    var m = Timing.Match(lines[i]);
-                    if (!m.Success)
-                    {
-                        continue;
-                    }
-
-                    var body = string.Join("\n", lines.Skip(i + 1)).Trim();
-                    cues.Add(new Cue(Ms(m, 1), Ms(m, 5), body));
-                    break;
+                    timings.Add(i);
                 }
             }
 
+            var cues = new List<Cue>();
+            for (var t = 0; t < timings.Count; t++)
+            {
+                var start = timings[t] + 1;
+                var end = t + 1 < timings.Count ? timings[t + 1] : lines.Length;
+                var body = lines.Skip(start).Take(end - start).ToList();
+                // The cue number of the next subtitle sits right before its timing line.
+                if (t + 1 < timings.Count && body.Count > 0 && IsIndex(body[body.Count - 1]))
+                {
+                    body.RemoveAt(body.Count - 1);
+                }
+
+                var m = Timing.Match(lines[timings[t]]);
+                cues.Add(new Cue(Ms(m, 1), Ms(m, 5), string.Join("\n", body).Trim()));
+            }
+
             return cues;
+        }
+
+        private static bool IsIndex(string line)
+        {
+            var trimmed = line.Trim();
+            return trimmed.Length > 0 && trimmed.All(char.IsDigit);
         }
 
         public static string Write(IReadOnlyList<Cue> cues)

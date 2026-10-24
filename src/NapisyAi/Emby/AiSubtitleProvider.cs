@@ -37,7 +37,7 @@ namespace NapisyAi.Emby
         {
             IEnumerable<RemoteSubtitleInfo> none = Array.Empty<RemoteSubtitleInfo>();
             var target = TranslationService.TargetLanguage;
-            if (Languages.Normalize(request.Language) != target || string.IsNullOrEmpty(request.MediaPath))
+            if (!PluginRules.ShouldOffer(request.Language, request.IsPerfectMatch, target) || string.IsNullOrEmpty(request.MediaPath))
             {
                 return Task.FromResult(none);
             }
@@ -67,9 +67,7 @@ namespace NapisyAi.Emby
 
         public async Task<SubtitleResponse> GetSubtitles(string id, CancellationToken cancellationToken)
         {
-            // Emby may prefix the id we returned with its own provider key, e.g. "<hash>_pl_<id>".
-            var internalId = long.Parse(id.Substring(id.LastIndexOf('_') + 1), System.Globalization.CultureInfo.InvariantCulture);
-            var item = _libraryManager.GetItemById(internalId) ?? throw new InvalidOperationException("Nie znaleziono elementu biblioteki");
+            var item = _libraryManager.GetItemById(PluginRules.ParseInternalId(id)) ?? throw new InvalidOperationException("Nie znaleziono elementu biblioteki");
             var decision = TranslationService.Decide(item);
             if (decision.Source == null)
             {

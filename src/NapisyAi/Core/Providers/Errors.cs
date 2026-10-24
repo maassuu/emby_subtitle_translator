@@ -18,6 +18,14 @@ namespace NapisyAi.Core.Providers
         }
     }
 
+    /// <summary>The account has no credit left; nothing will work until it is topped up.</summary>
+    public sealed class BillingException : ProviderException
+    {
+        public BillingException(string message, Exception? inner = null) : base(message, inner)
+        {
+        }
+    }
+
     /// <summary>Per-minute limit or temporary outage; the same request may be retried.</summary>
     public sealed class TransientException : Exception
     {

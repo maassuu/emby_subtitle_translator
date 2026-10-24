@@ -129,9 +129,9 @@ namespace NapisyAi.Tests
             var (p4, _) = Make(Claude(), (_, _) => FakeHandler.Json((HttpStatusCode)529, "{\"error\":{\"message\":\"overloaded\"}}"));
             await Assert.ThrowsAsync<TransientException>(() => p4.CompleteAsync(Req, default));
 
-            var (p5, _) = Make(Claude(), (_, _) => FakeHandler.Json((HttpStatusCode)400, "{\"error\":{\"message\":\"credit balance too low\"}}"));
+            var (p5, _) = Make(Claude(), (_, _) => FakeHandler.Json((HttpStatusCode)400, "{\"error\":{\"message\":\"max_tokens too large\"}}"));
             var bad = await Assert.ThrowsAsync<ProviderException>(() => p5.CompleteAsync(Req, default));
-            Assert.Contains("credit balance", bad.Message);
+            Assert.Contains("max_tokens", bad.Message);
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace NapisyAi.Tests
         public async Task OpenAiQuotaAndRateLimit()
         {
             var (p1, _) = Make(OpenAi(), (_, _) => FakeHandler.Json((HttpStatusCode)429, "{\"error\":{\"code\":\"insufficient_quota\",\"message\":\"quota\"}}"));
-            var ex = await Assert.ThrowsAsync<ProviderException>(() => p1.CompleteAsync(Req, default));
+            var ex = await Assert.ThrowsAsync<BillingException>(() => p1.CompleteAsync(Req, default));
             Assert.Equal("Brak środków na koncie dostawcy", ex.Message);
             var (p2, h2) = Make(OpenAi(), (_, _) => FakeHandler.Json((HttpStatusCode)429, "{\"error\":{\"message\":\"slow\"}}", ("retry-after", "3")));
             Assert.Equal(TimeSpan.FromSeconds(3), (await Assert.ThrowsAsync<TransientException>(() => p2.CompleteAsync(Req, default))).RetryAfter);

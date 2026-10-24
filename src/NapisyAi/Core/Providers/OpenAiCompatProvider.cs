@@ -45,7 +45,7 @@ namespace NapisyAi.Core.Providers
             {
                 if (text.Contains("insufficient_quota"))
                 {
-                    throw new ProviderException("Brak środków na koncie dostawcy");
+                    throw new BillingException("Brak środków na koncie dostawcy");
                 }
 
                 throw new TransientException(RetryAfter(response), "Limit zapytań dostawcy");

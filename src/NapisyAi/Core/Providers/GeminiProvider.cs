@@ -76,6 +76,11 @@ namespace NapisyAi.Core.Providers
                     "Gemini: limit zapytań na minutę");
             }
 
+            if (code == 402)
+            {
+                return new BillingException("Brak środków na koncie Gemini - doładuj projekt w AI Studio albo użyj klucza z projektu na darmowym poziomie");
+            }
+
             if (code == 401 || code == 403 || (code == 400 && message.Contains("API key")))
             {
                 return new ProviderAuthException("Gemini odrzucił klucz API: " + message);

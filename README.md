@@ -11,7 +11,7 @@ Wtyczka do serwera **Emby**, która tłumaczy angielskie napisy na wybrany języ
 ### Co potrafi
 
 - W oknie **„Szukaj napisów”** przy filmie lub odcinku dodaje pozycję **„Tłumaczenie AI (polski)”**. Po jej wybraniu tłumaczy angielskie napisy i Emby zapisuje je jak napisy z każdego innego źródła. Tłumaczenie odcinka trwa zwykle 1-2 minuty.
-- Zaplanowane zadanie **„Przetłumacz brakujące napisy”** (Panel → Zaplanowane zadania → Napisy AI) tłumaczy wszystkie filmy i odcinki, które mają angielskie napisy, a nie mają polskich. Domyślnie nie uruchamia się samo - uruchom je ręcznie albo ustaw harmonogram.
+- Zaplanowane zadanie **„Przetłumacz brakujące napisy”** (Panel → Zaplanowane zadania → Napisy AI) tłumaczy wszystkie filmy i odcinki, które mają angielskie napisy, a nie mają polskich. Domyślnie nie uruchamia się samo - uruchom je ręcznie albo ustaw harmonogram. Wtyczka nie reaguje na automatyczne pobieranie napisów przez Emby podczas skanowania biblioteki, więc nic nie tłumaczy się bez Twojej decyzji.
 - Korzysta z napisów zewnętrznych (`.srt`, `.ass`, `.vtt`) i tekstowych wbudowanych w plik (MKV/MP4). Napisy obrazkowe (PGS, VobSub) nie są obsługiwane.
 - Zachowuje czasy wyświetlania. Nigdy nie nadpisuje istniejących napisów i pomija elementy, które mają już napisy w języku docelowym.
 - Rozpoznaje stare kodowania polskich plików (Windows-1250, ISO-8859-2).
@@ -33,7 +33,7 @@ Panel → **Wtyczki** → **Napisy AI**:
 
 - **Język docelowy** - domyślnie polski.
 - **Dostawca AI** i **klucz API**. Zapisany klucz nie jest później pokazywany; puste pole przy zapisie oznacza „bez zmian”.
-- **Model** - domyślnie `gemini-3.8-flash` (Gemini) i `claude-opus-5-5` (Claude; tańsze: `claude-sonnet-5-5`, `claude-haiku-5-5`).
+- **Model** - domyślnie `gemini-3.5-flash-lite` (Gemini; szybki - `gemini-3.8-flash` tłumaczy lepiej, ale na darmowym poziomie bywa bardzo wolny) i `claude-opus-5-5` (Claude; tańsze: `claude-sonnet-5-5`, `claude-haiku-5-5`).
 - **Limit zapytań na minutę** - domyślnie 10, pod darmowy poziom Gemini.
 
 #### Darmowy klucz Gemini
@@ -42,7 +42,7 @@ Panel → **Wtyczki** → **Napisy AI**:
 2. Kliknij „Create API key” i skopiuj klucz.
 3. Wklej go w ustawieniach wtyczki i zapisz.
 
-Na darmowym poziomie Google może wykorzystywać przesłane teksty do ulepszania swoich usług. Po wyczerpaniu dziennego limitu tłumaczenie kończy się komunikatem, a zaplanowane zadanie dokończy pracę przy następnym uruchomieniu.
+Klucz musi pochodzić z projektu na darmowym poziomie (Free tier) albo z projektu z doładowanym kontem - przy wyczerpanej przedpłacie wtyczka pokaże „Brak środków na koncie Gemini”. Na darmowym poziomie Google może wykorzystywać przesłane teksty do ulepszania swoich usług. Po wyczerpaniu dziennego limitu tłumaczenie kończy się komunikatem, a zaplanowane zadanie dokończy pracę przy następnym uruchomieniu.
 
 ### Koszty płatnych dostawców
 
@@ -69,7 +69,7 @@ A plugin for **Emby Server** that translates English subtitles into a chosen lan
 ### Features
 
 - Adds **"Tłumaczenie AI (polski)"** (AI translation) to the **Search subtitles** dialog of movies and episodes. Choosing it translates the English subtitles and Emby saves them like subtitles from any other source. An episode usually takes 1-2 minutes.
-- Scheduled task **"Przetłumacz brakujące napisy"** (translate missing subtitles; Dashboard → Scheduled Tasks → Napisy AI) translates every movie and episode that has English subtitles but none in the target language. It has no trigger by default - run it manually or add a schedule.
+- Scheduled task **"Przetłumacz brakujące napisy"** (translate missing subtitles; Dashboard → Scheduled Tasks → Napisy AI) translates every movie and episode that has English subtitles but none in the target language. It has no trigger by default - run it manually or add a schedule. The plugin ignores Emby's automatic subtitle downloads during library scans, so nothing is translated unless you ask for it.
 - Uses external subtitles (`.srt`, `.ass`, `.vtt`) and text subtitles embedded in MKV/MP4. Image subtitles (PGS, VobSub) are not supported.
 - Keeps the original timings. Never overwrites existing subtitles and skips items that already have target-language subtitles.
 - Detects legacy encodings (Windows-1250, ISO-8859-2).
@@ -91,7 +91,7 @@ Dashboard → **Plugins** → **Napisy AI**:
 
 - **Target language** - Polish by default.
 - **AI provider** and **API key**. A saved key is never shown again; leaving the field empty keeps it.
-- **Model** - defaults `gemini-3.8-flash` (Gemini) and `claude-opus-5-5` (Claude; cheaper: `claude-sonnet-5-5`, `claude-haiku-5-5`).
+- **Model** - defaults `gemini-3.5-flash-lite` (Gemini; fast - `gemini-3.8-flash` translates better but can be very slow on the free tier) and `claude-opus-5-5` (Claude; cheaper: `claude-sonnet-5-5`, `claude-haiku-5-5`).
 - **Requests per minute** - 10 by default, for the Gemini free tier.
 
 #### Free Gemini key
@@ -100,7 +100,7 @@ Dashboard → **Plugins** → **Napisy AI**:
 2. Click "Create API key" and copy it.
 3. Paste it into the plugin settings and save.
 
-On the free tier Google may use submitted text to improve its products. When the daily quota runs out, translation stops with a message, and the scheduled task finishes the remaining items on its next run.
+The key must come from a free-tier project or a project with credit - with depleted prepayment the plugin reports "Brak środków na koncie Gemini" (no credit). On the free tier Google may use submitted text to improve its products. When the daily quota runs out, translation stops with a message, and the scheduled task finishes the remaining items on its next run.
 
 ### Paid provider costs
 

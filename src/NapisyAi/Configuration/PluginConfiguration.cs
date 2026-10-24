@@ -7,7 +7,7 @@ namespace NapisyAi.Configuration
         public string Provider { get; set; } = "gemini";
         public string TargetLanguage { get; set; } = "pl";
         public string GeminiApiKey { get; set; } = "";
-        public string GeminiModel { get; set; } = "gemini-3.8-flash";
+        public string GeminiModel { get; set; } = "gemini-3.5-flash-lite";
         public string AnthropicApiKey { get; set; } = "";
         public string AnthropicModel { get; set; } = "claude-opus-5-5";
         public string OpenAiApiKey { get; set; } = "";

@@ -61,7 +61,13 @@ namespace NapisyAi.Core.Providers
 
             if (status != HttpStatusCode.OK)
             {
-                throw new ProviderException("Claude: " + ErrorMessage(text));
+                var message = ErrorMessage(text);
+                if (message.IndexOf("credit balance", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    throw new BillingException("Brak środków na koncie Claude (Anthropic)");
+                }
+
+                throw new ProviderException("Claude: " + message);
             }
 
             using var doc = JsonDocument.Parse(text);

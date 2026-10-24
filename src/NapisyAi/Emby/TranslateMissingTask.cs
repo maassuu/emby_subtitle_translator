@@ -57,7 +57,7 @@ namespace NapisyAi.Emby
             var lang = TranslationService.TargetLanguage;
             var todo = items
                 .Select(i => (Item: i, Decision: TranslationService.Decide(i)))
-                .Where(x => x.Decision.Status == SourceStatus.Ready && !File.Exists(TargetPath(x.Item, lang)))
+                .Where(x => x.Decision.Status == SourceStatus.Ready && !File.Exists(PluginRules.TargetPath(x.Item.Path, lang)))
                 .ToList();
             _logger.Info("Do przetłumaczenia: {0}", todo.Count);
 
@@ -69,10 +69,15 @@ namespace NapisyAi.Emby
                 try
                 {
                     var cues = await TranslationService.TranslateAsync(item, decision.Source!, _mediaEncoder, itemProgress, cancellationToken).ConfigureAwait(false);
-                    if (Write(TargetPath(item, lang), Srt.Write(cues)))
+                    var target = PluginRules.TargetPath(item.Path, lang);
+                    if (SafeFile.WriteNew(target, Srt.Write(cues)))
                     {
                         _providerManager.QueueRefresh(item.InternalId, new MetadataRefreshOptions(_fileSystem), RefreshPriority.Normal);
-                        _logger.Info("Zapisano napisy: {0}", TargetPath(item, lang));
+                        _logger.Info("Zapisano napisy: {0}", target);
+                    }
+                    else
+                    {
+                        _logger.Warn("Plik {0} już istnieje - nie nadpisano", target);
                     }
                 }
                 catch (DailyQuotaException e)
@@ -80,7 +85,7 @@ namespace NapisyAi.Emby
                     _logger.Warn("Przerwano - {0}. Pozostałe pliki zostaną przetłumaczone przy następnym uruchomieniu.", e.Message);
                     break;
                 }
-                catch (ProviderAuthException e)
+                catch (Exception e) when (e is ProviderAuthException || e is BillingException)
                 {
                     _logger.Error("Przerwano - {0}", e.Message);
                     break;
@@ -91,38 +96,6 @@ namespace NapisyAi.Emby
                 }
 
                 progress.Report(100.0 * (n + 1) / todo.Count);
-            }
-        }
-
-        private static string TargetPath(BaseItem item, string lang) =>
-            Path.Combine(Path.GetDirectoryName(item.Path)!, Path.GetFileNameWithoutExtension(item.Path) + "." + lang + ".srt");
-
-        /// <summary>Writes via a temp file and never replaces an existing file.</summary>
-        private bool Write(string path, string content)
-        {
-            if (File.Exists(path))
-            {
-                return false;
-            }
-
-            var temp = path + ".tmp";
-            try
-            {
-                File.WriteAllText(temp, content, new UTF8Encoding(false));
-                File.Move(temp, path);
-                return true;
-            }
-            catch (IOException e) when (File.Exists(path))
-            {
-                _logger.Warn("Plik {0} pojawił się w trakcie tłumaczenia - nie nadpisano ({1})", path, e.Message);
-                return false;
-            }
-            finally
-            {
-                if (File.Exists(temp))
-                {
-                    File.Delete(temp);
-                }
             }
         }
     }

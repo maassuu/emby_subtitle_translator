@@ -67,3 +67,23 @@ namespace NapisyAi.Tests
         }
     }
 }
+
+namespace NapisyAi.Tests
+{
+    public class SrtWithoutBlankLinesTests
+    {
+        [Fact]
+        public void SplitsCuesWithoutBlankLines()
+        {
+            var raw = "1\n00:00:01,000 --> 00:00:02,000\nHi\n2\n00:00:03,000 --> 00:00:04,000\nBye";
+            Assert.Equal(new[] { new Core.Cue(1000, 2000, "Hi"), new Core.Cue(3000, 4000, "Bye") }, Core.Srt.Parse(raw));
+        }
+
+        [Fact]
+        public void KeepsNumericCueText()
+        {
+            var raw = "1\n00:00:01,000 --> 00:00:02,000\n42\n\n2\n00:00:03,000 --> 00:00:04,000\nBye\n";
+            Assert.Equal("42", Core.Srt.Parse(raw)[0].Text);
+        }
+    }
+}
