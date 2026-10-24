@@ -43,6 +43,10 @@ namespace NapisyAi.Core
             return cues;
         }
 
+        // A blank line ends a cue in SRT, so it must not appear inside the text.
+        private static string NoBlankLines(string text) =>
+            string.Join("\n", text.Split('\n').Where(l => l.Trim().Length > 0));
+
         private static bool IsIndex(string line)
         {
             var trimmed = line.Trim();
@@ -61,7 +65,7 @@ namespace NapisyAi.Core
 
                 sb.Append(i + 1).Append('\n')
                     .Append(Format(cues[i].StartMs)).Append(" --> ").Append(Format(cues[i].EndMs)).Append('\n')
-                    .Append(cues[i].Text).Append('\n');
+                    .Append(NoBlankLines(cues[i].Text)).Append('\n');
             }
 
             return sb.ToString();

@@ -11,6 +11,13 @@ define(['baseView', 'loading', 'emby-input', 'emby-button', 'emby-select', 'emby
         return id.charAt(0).toUpperCase() + id.slice(1);
     }
 
+    function fail(message) {
+        return function () {
+            loading.hide();
+            Dashboard.alert(message);
+        };
+    }
+
     function showProviderSection(view) {
         var provider = view.querySelector('#provider').value;
         view.querySelectorAll('.providerSection').forEach(function (section) {
@@ -34,7 +41,7 @@ define(['baseView', 'loading', 'emby-input', 'emby-button', 'emby-select', 'emby
             });
             showProviderSection(view);
             loading.hide();
-        });
+        }, fail('Nie udało się wczytać ustawień wtyczki.'));
     }
 
     function save(view) {
@@ -58,8 +65,8 @@ define(['baseView', 'loading', 'emby-input', 'emby-button', 'emby-select', 'emby
             ApiClient.updatePluginConfiguration(pluginId, config).then(function (result) {
                 Dashboard.processPluginConfigurationUpdateResult(result);
                 load(view);
-            });
-        });
+            }, fail('Nie udało się zapisać ustawień wtyczki.'));
+        }, fail('Nie udało się wczytać ustawień wtyczki.'));
     }
 
     function View(view, params) {

@@ -65,6 +65,22 @@ namespace NapisyAi.Emby
             return Task.FromResult(results);
         }
 
+        private async Task RestoreLaterAsync(string target, string backup)
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1)).ConfigureAwait(false);
+            try
+            {
+                if (SafeFile.RestoreIfMissing(target, backup))
+                {
+                    _logger.Warn("Emby nie zapisało nowych napisów - przywrócono poprzednie: {0}", target);
+                }
+            }
+            catch (IOException e)
+            {
+                _logger.Error("Nie udało się przywrócić napisów {0}: {1}", target, e.Message);
+            }
+        }
+
         public async Task<SubtitleResponse> GetSubtitles(string id, CancellationToken cancellationToken)
         {
             var item = _libraryManager.GetItemById(PluginRules.ParseInternalId(id)) ?? throw new InvalidOperationException("Nie znaleziono elementu biblioteki");
@@ -84,11 +100,14 @@ namespace NapisyAi.Emby
                 _logger.Info("Przetłumaczono {0} kwestii: {1}", cues.Count, item.Path);
                 if (overwrite)
                 {
-                    // Emby saves the response as <video>.<lang>.srt and adds ".1" when that name is taken.
+                    // Emby saves the response as <video>.<lang>.srt and adds ".1" when that name is taken,
+                    // so the old file steps aside and comes back if Emby does not save the new one.
                     var target = PluginRules.TargetPath(item.Path, TranslationService.TargetLanguage);
-                    if (SafeFile.DeleteIfExists(target))
+                    var backup = SafeFile.MoveAside(target);
+                    if (backup != null)
                     {
-                        _logger.Info("Zastąpiono istniejące napisy: {0}", target);
+                        _logger.Info("Zastępowanie istniejących napisów: {0}", target);
+                        _ = RestoreLaterAsync(target, backup);
                     }
                 }
 

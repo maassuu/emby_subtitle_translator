@@ -44,5 +44,44 @@ namespace NapisyAi.Core
             File.Delete(path);
             return true;
         }
+    
+        /// <summary>
+        /// Renames an existing file to a backup next to it (not a subtitle extension, so players ignore it);
+        /// returns the backup path, or null when there was nothing to move.
+        /// </summary>
+        public static string? MoveAside(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            var backup = path + ".napisyai-backup";
+            if (File.Exists(backup))
+            {
+                File.Delete(backup);
+            }
+
+            File.Move(path, backup);
+            return backup;
+        }
+
+        /// <summary>Puts the backup back when no new file took its place; otherwise drops the backup. Returns true when restored.</summary>
+        public static bool RestoreIfMissing(string path, string backup)
+        {
+            if (!File.Exists(backup))
+            {
+                return false;
+            }
+
+            if (File.Exists(path))
+            {
+                File.Delete(backup);
+                return false;
+            }
+
+            File.Move(backup, path);
+            return true;
+        }
     }
 }

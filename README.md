@@ -13,7 +13,7 @@ Wtyczka do serwera **Emby**, która tłumaczy angielskie napisy na wybrany języ
 - W oknie **„Szukaj napisów”** przy filmie lub odcinku dodaje pozycję **„Tłumaczenie AI (polski)”**. Po jej wybraniu tłumaczy angielskie napisy i Emby zapisuje je jak napisy z każdego innego źródła. Tłumaczenie odcinka trwa zwykle 1-2 minuty.
 - Zaplanowane zadanie **„Przetłumacz brakujące napisy”** (Panel → Zaplanowane zadania → Napisy AI) tłumaczy wszystkie filmy i odcinki, które mają angielskie napisy, a nie mają polskich. Domyślnie nie uruchamia się samo - uruchom je ręcznie albo ustaw harmonogram. Wtyczka nie reaguje na automatyczne pobieranie napisów przez Emby podczas skanowania biblioteki, więc nic nie tłumaczy się bez Twojej decyzji.
 - Korzysta z napisów zewnętrznych (`.srt`, `.ass`, `.vtt`) i tekstowych wbudowanych w plik (MKV/MP4). Napisy obrazkowe (PGS, VobSub) nie są obsługiwane.
-- Zachowuje czasy wyświetlania. Napisy zapisuje obok filmu pod tą samą nazwą: `<nazwa filmu>.pl.srt`, więc każda aplikacja je skojarzy. Istniejący plik o tej nazwie jest zastępowany (opcja „Nadpisuj istniejące napisy”, domyślnie włączona; po wyłączeniu wtyczka nie rusza istniejących polskich napisów).
+- Zachowuje czasy wyświetlania. Napisy zapisuje obok filmu pod tą samą nazwą: `<nazwa filmu>.<kod języka>.srt` (dla polskiego `.pl.srt`), więc każda aplikacja je skojarzy. Istniejący plik o tej nazwie jest zastępowany (opcja „Nadpisuj istniejące napisy”, domyślnie włączona; po wyłączeniu wtyczka nie rusza istniejących napisów w języku docelowym). Poprzedni plik jest odkładany na bok i wraca, jeśli Emby nie zapisze nowego..
 - Rozpoznaje stare kodowania polskich plików (Windows-1250, ISO-8859-2).
 - Dostawcy AI: **Gemini** (darmowy klucz), **Claude** oraz każde **API zgodne z OpenAI** (ChatGPT, OpenRouter, DeepSeek, lokalna Ollama).
 
@@ -25,7 +25,7 @@ Wtyczka do serwera **Emby**, która tłumaczy angielskie napisy na wybrany języ
    - Linux: `/var/lib/emby/plugins/`
    - Windows: `%AppData%\Emby-Server\programdata\plugins\`
 3. Uruchom ponownie serwer Emby.
-4. Wymagany Emby 4.9 lub nowszy.
+4. Wymagany Emby 4.9.1.90 lub nowszy.
 
 ### Ustawienia
 
@@ -72,7 +72,7 @@ A plugin for **Emby Server** that translates English subtitles into a chosen lan
 - Adds **"Tłumaczenie AI (polski)"** (AI translation) to the **Search subtitles** dialog of movies and episodes. Choosing it translates the English subtitles and Emby saves them like subtitles from any other source. An episode usually takes 1-2 minutes.
 - Scheduled task **"Przetłumacz brakujące napisy"** (translate missing subtitles; Dashboard → Scheduled Tasks → Napisy AI) translates every movie and episode that has English subtitles but none in the target language. It has no trigger by default - run it manually or add a schedule. The plugin ignores Emby's automatic subtitle downloads during library scans, so nothing is translated unless you ask for it.
 - Uses external subtitles (`.srt`, `.ass`, `.vtt`) and text subtitles embedded in MKV/MP4. Image subtitles (PGS, VobSub) are not supported.
-- Keeps the original timings. Saves subtitles next to the video under the same name, `<video name>.pl.srt`, so every player picks them up. An existing file with that name is replaced ("Nadpisuj istniejące napisy" / overwrite existing, on by default; turn it off to keep existing Polish subtitles untouched).
+- Keeps the original timings. Saves subtitles next to the video under the same name, `<video name>.<language code>.srt` (`.pl.srt` for Polish), so every player picks them up. An existing file with that name is replaced ("Nadpisuj istniejące napisy" / overwrite existing, on by default; turn it off to keep existing target-language subtitles untouched). The previous file is moved aside and restored if Emby does not save the new one.
 - Detects legacy encodings (Windows-1250, ISO-8859-2).
 - Providers: **Gemini** (free key), **Claude** and any **OpenAI-compatible API** (ChatGPT, OpenRouter, DeepSeek, local Ollama).
 
@@ -84,7 +84,7 @@ A plugin for **Emby Server** that translates English subtitles into a chosen lan
    - Linux: `/var/lib/emby/plugins/`
    - Windows: `%AppData%\Emby-Server\programdata\plugins\`
 3. Restart Emby Server.
-4. Requires Emby 4.9 or newer.
+4. Requires Emby 4.9.1.90 or newer.
 
 ### Settings
 
