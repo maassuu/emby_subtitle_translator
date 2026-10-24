@@ -13,9 +13,27 @@ Wtyczka do serwera **Emby**, która tłumaczy angielskie napisy na wybrany języ
 - W oknie **„Szukaj napisów”** przy filmie lub odcinku dodaje pozycję **„Tłumaczenie AI (polski)”**. Po jej wybraniu tłumaczy angielskie napisy i Emby zapisuje je jak napisy z każdego innego źródła. Tłumaczenie odcinka trwa zwykle 1-2 minuty.
 - Zaplanowane zadanie **„Przetłumacz brakujące napisy”** (Panel → Zaplanowane zadania → Napisy AI) tłumaczy wszystkie filmy i odcinki, które mają angielskie napisy, a nie mają polskich. Domyślnie nie uruchamia się samo - uruchom je ręcznie albo ustaw harmonogram. Wtyczka nie reaguje na automatyczne pobieranie napisów przez Emby podczas skanowania biblioteki, więc nic nie tłumaczy się bez Twojej decyzji.
 - Korzysta z napisów zewnętrznych (`.srt`, `.ass`, `.vtt`) i tekstowych wbudowanych w plik (MKV/MP4). Napisy obrazkowe (PGS, VobSub) nie są obsługiwane.
-- Zachowuje czasy wyświetlania. Napisy zapisuje obok filmu pod tą samą nazwą: `<nazwa filmu>.<kod języka>.srt` (dla polskiego `.pl.srt`), więc każda aplikacja je skojarzy. Istniejący plik o tej nazwie jest zastępowany (opcja „Nadpisuj istniejące napisy”, domyślnie włączona; po wyłączeniu wtyczka nie rusza istniejących napisów w języku docelowym). Poprzedni plik jest odkładany na bok i wraca, jeśli Emby nie zapisze nowego..
+- Zachowuje czasy wyświetlania. Napisy zapisuje obok filmu pod tą samą nazwą: `<nazwa filmu>.<kod języka>.srt` (dla polskiego `.pl.srt`), więc każda aplikacja je skojarzy. Istniejący plik o tej nazwie jest zastępowany (opcja „Nadpisuj istniejące napisy”, domyślnie włączona; po wyłączeniu wtyczka nie rusza istniejących napisów w języku docelowym). Poprzedni plik jest odkładany na bok i wraca, jeśli Emby nie zapisze nowego.
 - Rozpoznaje stare kodowania polskich plików (Windows-1250, ISO-8859-2).
 - Dostawcy AI: **Gemini** (darmowy klucz), **Claude** oraz każde **API zgodne z OpenAI** (ChatGPT, OpenRouter, DeepSeek, lokalna Ollama).
+
+### Jak to wygląda
+
+**1. Szukaj napisów** - przy odcinku wybierz „Edytuj napisy”, ustaw język polski i kliknij „Szukaj”. Kliknij strzałkę przy „Tłumaczenie AI (polski)”:
+
+![Okno „Szukaj napisów” z pozycją „Tłumaczenie AI (polski)”](docs/screenshots/szukaj-napisow.png)
+
+**2. Gotowe** - przetłumaczone napisy leżą obok filmu pod tą samą nazwą (`Test Show S01E01.pl.srt`):
+
+![Lista napisów odcinka z angielskimi i nowymi polskimi napisami](docs/screenshots/gotowe-napisy.png)
+
+**3. Oglądanie** - polskie napisy są do wybrania przy odcinku i w odtwarzaczu:
+
+![Strona odcinka z wybranymi napisami Polish (SRT)](docs/screenshots/odcinek.png)
+
+**Ustawienia wtyczki** (Panel → Wtyczki → Napisy AI):
+
+![Strona ustawień wtyczki Napisy AI](docs/screenshots/ustawienia.png)
 
 ### Instalacja
 
@@ -75,6 +93,24 @@ A plugin for **Emby Server** that translates English subtitles into a chosen lan
 - Keeps the original timings. Saves subtitles next to the video under the same name, `<video name>.<language code>.srt` (`.pl.srt` for Polish), so every player picks them up. An existing file with that name is replaced ("Nadpisuj istniejące napisy" / overwrite existing, on by default; turn it off to keep existing target-language subtitles untouched). The previous file is moved aside and restored if Emby does not save the new one.
 - Detects legacy encodings (Windows-1250, ISO-8859-2).
 - Providers: **Gemini** (free key), **Claude** and any **OpenAI-compatible API** (ChatGPT, OpenRouter, DeepSeek, local Ollama).
+
+### Screenshots
+
+**1. Search subtitles** - on an episode choose "Edit subtitles", set the language to Polish and search. Click the arrow next to "Tłumaczenie AI (polski)":
+
+![Search subtitles dialog with the AI translation entry](docs/screenshots/szukaj-napisow.png)
+
+**2. Done** - the translated subtitles sit next to the video under the same name (`Test Show S01E01.pl.srt`):
+
+![Episode subtitle list with English and the new Polish subtitles](docs/screenshots/gotowe-napisy.png)
+
+**3. Watching** - the Polish subtitles can be picked on the episode page and in the player:
+
+![Episode page with Polish (SRT) subtitles selected](docs/screenshots/odcinek.png)
+
+**Plugin settings** (Dashboard → Plugins → Napisy AI):
+
+![Napisy AI plugin settings page](docs/screenshots/ustawienia.png)
 
 ### Installation
 
