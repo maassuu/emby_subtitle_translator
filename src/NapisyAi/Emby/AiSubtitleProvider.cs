@@ -43,7 +43,7 @@ namespace NapisyAi.Emby
             }
 
             var item = _libraryManager.FindByPath(request.MediaPath, false);
-            if (item == null || TranslationService.Decide(item).Status != SourceStatus.Ready)
+            if (item == null || TranslationService.Decide(item, TranslationService.Config.OverwriteExisting).Status != SourceStatus.Ready)
             {
                 return Task.FromResult(none);
             }
@@ -68,7 +68,8 @@ namespace NapisyAi.Emby
         public async Task<SubtitleResponse> GetSubtitles(string id, CancellationToken cancellationToken)
         {
             var item = _libraryManager.GetItemById(PluginRules.ParseInternalId(id)) ?? throw new InvalidOperationException("Nie znaleziono elementu biblioteki");
-            var decision = TranslationService.Decide(item);
+            var overwrite = TranslationService.Config.OverwriteExisting;
+            var decision = TranslationService.Decide(item, overwrite);
             if (decision.Source == null)
             {
                 throw new InvalidOperationException(decision.Status == SourceStatus.HasTarget
@@ -81,6 +82,16 @@ namespace NapisyAi.Emby
             {
                 var cues = await TranslationService.TranslateAsync(item, decision.Source, _mediaEncoder, null, cancellationToken).ConfigureAwait(false);
                 _logger.Info("Przetłumaczono {0} kwestii: {1}", cues.Count, item.Path);
+                if (overwrite)
+                {
+                    // Emby saves the response as <video>.<lang>.srt and adds ".1" when that name is taken.
+                    var target = PluginRules.TargetPath(item.Path, TranslationService.TargetLanguage);
+                    if (SafeFile.DeleteIfExists(target))
+                    {
+                        _logger.Info("Zastąpiono istniejące napisy: {0}", target);
+                    }
+                }
+
                 return new SubtitleResponse
                 {
                     Format = "srt",

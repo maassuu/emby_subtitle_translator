@@ -16,5 +16,8 @@ namespace NapisyAi.Configuration
         public int RequestsPerMinute { get; set; } = 10;
         public int BatchSize { get; set; } = 60;
         public int ContextSize { get; set; } = 15;
+
+        // Save the translation as <video>.<lang>.srt, replacing an existing file with that name.
+        public bool OverwriteExisting { get; set; } = true;
     }
 }

@@ -20,9 +20,9 @@ namespace NapisyAi.Core
     {
         private const string SourceLanguage = "en";
 
-        public static SourceDecision Choose(IReadOnlyList<SubtitleTrack> tracks, string targetLanguage)
+        public static SourceDecision Choose(IReadOnlyList<SubtitleTrack> tracks, string targetLanguage, bool ignoreExistingTarget = false)
         {
-            if (tracks.Any(t => Languages.Normalize(t.Language) == targetLanguage))
+            if (!ignoreExistingTarget && tracks.Any(t => Languages.Normalize(t.Language) == targetLanguage))
             {
                 return new SourceDecision(SourceStatus.HasTarget, null);
             }

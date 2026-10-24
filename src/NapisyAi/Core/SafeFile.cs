@@ -32,5 +32,17 @@ namespace NapisyAi.Core
                 }
             }
         }
+    
+        /// <summary>Removes the file so the next save takes its exact name; returns whether anything was removed.</summary>
+        public static bool DeleteIfExists(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return false;
+            }
+
+            File.Delete(path);
+            return true;
+        }
     }
 }

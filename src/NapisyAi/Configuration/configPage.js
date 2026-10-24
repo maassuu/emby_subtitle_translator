@@ -5,6 +5,7 @@ define(['baseView', 'loading', 'emby-input', 'emby-button', 'emby-select', 'emby
     var textFields = ['targetLanguage', 'provider', 'geminiModel', 'anthropicModel', 'openAiBaseUrl', 'openAiModel'];
     var secretFields = ['geminiApiKey', 'anthropicApiKey', 'openAiApiKey'];
     var numberFields = ['requestsPerMinute'];
+    var checkboxFields = ['overwriteExisting'];
 
     function configKey(id) {
         return id.charAt(0).toUpperCase() + id.slice(1);
@@ -22,6 +23,9 @@ define(['baseView', 'loading', 'emby-input', 'emby-button', 'emby-select', 'emby
         ApiClient.getPluginConfiguration(pluginId).then(function (config) {
             textFields.concat(numberFields).forEach(function (id) {
                 view.querySelector('#' + id).value = config[configKey(id)];
+            });
+            checkboxFields.forEach(function (id) {
+                view.querySelector('#' + id).checked = !!config[configKey(id)];
             });
             secretFields.forEach(function (id) {
                 var input = view.querySelector('#' + id);
@@ -41,6 +45,9 @@ define(['baseView', 'loading', 'emby-input', 'emby-button', 'emby-select', 'emby
             });
             numberFields.forEach(function (id) {
                 config[configKey(id)] = parseInt(view.querySelector('#' + id).value, 10) || 0;
+            });
+            checkboxFields.forEach(function (id) {
+                config[configKey(id)] = view.querySelector('#' + id).checked;
             });
             secretFields.forEach(function (id) {
                 var value = view.querySelector('#' + id).value.trim();

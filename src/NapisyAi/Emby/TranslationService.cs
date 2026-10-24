@@ -24,7 +24,8 @@ namespace NapisyAi.Emby
 
         public static string TargetLanguage => Languages.Normalize(Config.TargetLanguage) ?? "pl";
 
-        public static SourceDecision Decide(BaseItem item) => SourceSelector.Choose(SubtitleSource.Tracks(item), TargetLanguage);
+        public static SourceDecision Decide(BaseItem item, bool ignoreExistingTarget = false) =>
+            SourceSelector.Choose(SubtitleSource.Tracks(item), TargetLanguage, ignoreExistingTarget);
 
         public static async Task<List<Cue>> TranslateAsync(BaseItem item, SubtitleTrack source, IMediaEncoder encoder, IProgress<double>? progress, CancellationToken cancellationToken)
         {

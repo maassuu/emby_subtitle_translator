@@ -127,3 +127,40 @@ namespace NapisyAi.Tests
         }
     }
 }
+
+namespace NapisyAi.Tests
+{
+    public class OverwriteTests
+    {
+        [Fact]
+        public void OverwriteModeOffersSourceEvenWhenTargetExists()
+        {
+            var eng = new SubtitleTrack(1, "eng", true, "/m/E.en.srt", true, false, false);
+            var pol = new SubtitleTrack(2, "pol", true, "/m/E.pl.srt", true, false, false);
+            Assert.Equal(SourceStatus.HasTarget, SourceSelector.Choose(new[] { eng, pol }, "pl").Status);
+            var d = SourceSelector.Choose(new[] { eng, pol }, "pl", ignoreExistingTarget: true);
+            Assert.Equal(SourceStatus.Ready, d.Status);
+            Assert.Equal(eng, d.Source);
+        }
+
+        [Fact]
+        public void DeleteIfExistsRemovesOnlyThatFile()
+        {
+            var dir = Directory.CreateTempSubdirectory().FullName;
+            var target = Path.Combine(dir, "Film.pl.srt");
+            var other = Path.Combine(dir, "Film.en.srt");
+            File.WriteAllText(target, "stare");
+            File.WriteAllText(other, "en");
+            Assert.True(SafeFile.DeleteIfExists(target));
+            Assert.False(File.Exists(target));
+            Assert.True(File.Exists(other));
+            Assert.False(SafeFile.DeleteIfExists(target));
+        }
+
+        [Fact]
+        public void OverwriteIsOnByDefault()
+        {
+            Assert.True(new Configuration.PluginConfiguration().OverwriteExisting);
+        }
+    }
+}
