@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Napisy AI</title>
+</head>
+<body>
+    <div data-role="page" class="page type-interior pluginConfigurationPage napisyAiConfigPage" data-require="emby-input,emby-button,emby-select,emby-checkbox" data-controller="__plugin/napisyaijs">
+        <div data-role="content">
+            <div class="content-primary">
+                <form class="napisyAiConfigForm">
+                    <h2>Napisy AI</h2>
+                    <p>Tłumaczenie angielskich napisów przez AI. Przetłumaczone napisy znajdziesz w „Szukaj napisów” przy filmie lub odcinku.</p>
+
+                    <div class="selectContainer">
+                        <select is="emby-select" id="targetLanguage" label="Język docelowy">
+                            <option value="pl">polski</option>
+                            <option value="de">niemiecki</option>
+                            <option value="fr">francuski</option>
+                            <option value="es">hiszpański</option>
+                            <option value="it">włoski</option>
+                            <option value="cs">czeski</option>
+                            <option value="sk">słowacki</option>
+                            <option value="uk">ukraiński</option>
+                            <option value="ru">rosyjski</option>
+                            <option value="pt">portugalski</option>
+                            <option value="nl">niderlandzki</option>
+                            <option value="sv">szwedzki</option>
+                        </select>
+                    </div>
+
+                    <div class="selectContainer">
+                        <select is="emby-select" id="provider" label="Dostawca AI">
+                            <option value="gemini">Gemini (Google AI Studio)</option>
+                            <option value="anthropic">Claude (Anthropic)</option>
+                            <option value="openai">API zgodne z OpenAI (ChatGPT, OpenRouter, Ollama...)</option>
+                        </select>
+                    </div>
+
+                    <div class="providerSection" data-provider="gemini">
+                        <div class="inputContainer">
+                            <input is="emby-input" type="password" id="geminiApiKey" label="Klucz API Gemini" autocomplete="off" />
+                            <div class="fieldDescription">Darmowy klucz: aistudio.google.com/apikey</div>
+                        </div>
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="geminiModel" label="Model Gemini" />
+                            <div class="fieldDescription">Domyślnie gemini-3.5-flash-lite (szybki). gemini-3.8-flash tłumaczy lepiej, ale na darmowym poziomie bywa bardzo wolny.</div>
+                        </div>
+                    </div>
+
+                    <div class="providerSection" data-provider="anthropic">
+                        <div class="inputContainer">
+                            <input is="emby-input" type="password" id="anthropicApiKey" label="Klucz API Claude" autocomplete="off" />
+                        </div>
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="anthropicModel" label="Model Claude" />
+                            <div class="fieldDescription">Tańsze modele: claude-sonnet-5-5, claude-haiku-5-5.</div>
+                        </div>
+                    </div>
+
+                    <div class="providerSection" data-provider="openai">
+                        <div class="inputContainer">
+                            <input is="emby-input" type="password" id="openAiApiKey" label="Klucz API" autocomplete="off" />
+                        </div>
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="openAiBaseUrl" label="Adres API (puste = OpenAI)" />
+                            <div class="fieldDescription">Np. http://localhost:11434/v1 dla Ollamy.</div>
+                        </div>
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="openAiModel" label="Model" />
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="overwriteExisting" />
+                            <span>Nadpisuj istniejące napisy</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">Tłumaczenie zapisuje się obok filmu jako &lt;nazwa filmu&gt;.&lt;kod języka&gt;.srt (np. .pl.srt), zastępując plik o tej nazwie. Po wyłączeniu istniejące napisy w języku docelowym zostają, a „Tłumaczenie AI” nie pokazuje się przy filmach, które już je mają.</div>
+                    </div>
+
+                    <div class="inputContainer">
+                        <input is="emby-input" type="number" id="requestsPerMinute" min="1" label="Limit zapytań na minutę" />
+                    </div>
+
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>Zapisz</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

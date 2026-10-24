@@ -17,7 +17,7 @@ Wtyczka serwera Emby, która tłumaczy angielskie napisy na wybrany język (domy
 - Źródło: napisy znane Emby (`MediaStream`): najpierw zewnętrzne angielskie pełne, potem SDH, potem wbudowane tekstowe angielskie, na końcu `forced`. Napisy obrazkowe (PGS/VobSub) są pomijane.
 - Element pomijany, jeśli ma już napisy w języku docelowym (zewnętrzne lub wbudowane).
 - Tłumaczenie w paczkach (domyślnie 60 kwestii) z kontekstem kilkunastu poprzednich kwestii i tytułem; odpowiedź JSON z tymi samymi `id`; walidacja; ponowienie, potem podział paczki, potem błąd. Czasy i liczba kwestii 1:1.
-- Nigdy nie nadpisuje istniejącego pliku napisów (zadanie zaplanowane zapisuje tylko, gdy plik docelowy nie istnieje). Zapis przez plik tymczasowy i zamianę.
+- Tłumaczenie z „Szukaj napisów” zapisuje się zawsze jako `<nazwa filmu>.<kod języka>.srt` obok filmu; opcja „Nadpisuj istniejące napisy” (domyślnie włączona) zastępuje istniejący plik o tej nazwie i pokazuje „Tłumaczenie AI” także przy elementach, które mają już napisy w języku docelowym. Po jej wyłączeniu istniejące napisy zostają nietknięte. Zadanie zaplanowane tłumaczy tylko elementy bez napisów w języku docelowym i nie nadpisuje plików; zapis przez plik tymczasowy i zamianę.
 - Pliki wideo tylko do odczytu. Do dostawcy AI trafia tylko tekst napisów i tytuł.
 - Limity: zapytania po kolei, konfigurowalny limit na minutę, ponawianie przy 429 z `Retry-After`. Wyczerpany limit dzienny przerywa bieżące tłumaczenie z czytelnym komunikatem; zadanie zaplanowane kończy przebieg i spróbuje przy następnym uruchomieniu.
 - Kodowanie plików wejściowych wykrywane (UTF-8, Windows-1250, ISO-8859-2, Windows-1252); wynik UTF-8.
